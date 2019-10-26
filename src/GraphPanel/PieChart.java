@@ -1,5 +1,6 @@
 package GraphPanel;
 
+import DButils.DBmanager;
 import GraphPanel.ChartUtil.ChartUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -9,6 +10,8 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.ui.RectangleEdge;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PieChart {
@@ -19,10 +22,16 @@ public class PieChart {
     * @api Param :
     * @api return:
      **/
-    public PieChart() {
+
+    private DBmanager dbmanager = null;
+    private  String username = null ;
+
+    public PieChart(DBmanager DB, String user) {
+        dbmanager = DB ;
+        username = user;
     }
 
-    public static  DefaultPieDataset createDataset() {
+    public  DefaultPieDataset createDataset() {
         /**
             * @api 成员函数描述  Author : PKY
             * @api createDataset
@@ -30,14 +39,35 @@ public class PieChart {
             * @api Param []:  Map()
             * @api returnorg.jfree.data.general.DefaultPieDataset:  返回饼图数据集
             **/
-        String[] categories = { "斜方肌", "三角肌", "肱二头肌", "前臂肌", "胸大肌", "肱三头肌", "大圆肌", "背阔肌", "大腿肌"}; // muscle_name
-        Object[] datas = { 230, 411, 192, 123, 34, 572, 21, 41, 24 };                                                    //num
+
+        Map muscle_maps = new HashMap();
+
+        try {
+            muscle_maps = dbmanager.return_Pie_data(username);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        String[] categories = new String[muscle_maps.size()];
+        Object [] datas = new Object[muscle_maps.size()];
+        int i = 0 ;
+        for(Object key : muscle_maps.keySet()){
+             String Key = key.toString();
+             categories[i] = Key;
+             datas[i] = muscle_maps.get(Key);
+             i++;
+         }
         DefaultPieDataset dataset = ChartUtils.createDefaultPieDataset(categories, datas);
+
+
+//        String[] categories = { "斜方肌", "三角肌", "肱二头肌", "前臂肌", "胸大肌", "肱三头肌", "大圆肌", "背阔肌", "大腿肌"}; // muscle_name
+//        Object[] datas = { 230, 411, 192, 123, 34, 572, 21, 41, 24 };                                                    //num
+
         return dataset;
     }
 
 
-    public static ChartPanel createChart() {
+    public ChartPanel createChart() {
         /**
             * @api 成员函数描述  Author : PKY
             * @api createChart
