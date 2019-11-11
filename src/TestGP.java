@@ -13,7 +13,7 @@ public class TestGP extends JFrame{
         DBmanager dbmanager = new DBmanager();
         //String username = "pky";
         String [] usernames = {"pky" , "tjl" , "yzb"};
-        ChartPanel piepanel = new Compare_LineChart(dbmanager,usernames).createChart();
+        ChartPanel piepanel = new Compare_LineChart(dbmanager,usernames).createChart();   // 初始化实例时传入  dbmanager ,  usernames
         piepanel.setEnabled(true);
         piepanel.setVisible(true);
         this.add(piepanel);
